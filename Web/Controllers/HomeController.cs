@@ -6,7 +6,11 @@ using TwitterRealtimeSearch.Web.App_Start;
 
 namespace TwitterRealtimeSearch.Web.Controllers
 {
-
+    /// <summary>
+    /// 
+    /// <see cref="https://github.com/nkuln/tweetsource">tweet source manages oAuth needed to connect to Twitter's stream API</see>
+    /// the library is event based so each new arrived tweet will trigger an event
+    /// </summary>
     public class HomeController : Controller
     {
         private TweetEventSource _tweetEventSource;
