@@ -1,0 +1,32 @@
+﻿
+
+#tweets {
+    position: absolute;
+    top: 4.615em;
+    right: 1em;
+    left: 1em;
+    bottom: 0;
+    margin: 0;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    border: 1px solid silver;
+}
+
+#tweets li .avatar {
+    float: left;
+    bottom: 0;
+}
+#tweets li {
+    list-style-type: none;
+    transition: background-color 0.5s ease-out;
+    line-height: 20px;
+    position: relative;
+    background-color: #fff;
+    border-bottom: 1px solid #e4e4e4;
+    padding: 1em 1.538em 0 1.538em;
+}
+
+#tweets li header {
+    left: 13px;
+    position: relative;  
+}

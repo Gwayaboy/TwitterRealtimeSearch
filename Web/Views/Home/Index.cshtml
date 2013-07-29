@@ -1,5 +1,72 @@
-﻿@{
-    ViewBag.Title = "Index";
+﻿@using TwitterRealtimeSearch.Web
+@model TwitterRealtimeSearch.Web.Controllers.RealTimeTweetSearch
+@{
+    var search = string.IsNullOrWhiteSpace(Model.Search) ? "(Empty)" : "\"" + Model.Search + "\"";
 }
+<script src="http://js.pusher.com/2.1/pusher.js"></script>
+<script src="~/Scripts/jquery-2.0.3.js"></script>
+<link href="~/Content/Site.css" rel="stylesheet" />
 
-<h2>Index</h2>
+<h2>Results for @search</h2>
+<ul id="tweets">
+   
+</ul>
+
+<script type="text/javascript">
+    $(function() {
+
+        String.prototype.fillWith = function(object) {
+
+            var propertyNames = this.match(/{[\w|.]*}/gi),
+                result = this;
+            
+            if (propertyNames && propertyNames.length) {
+
+                for (var i = 0; i < propertyNames.length; i++) {
+
+                    var nestedProperties = propertyNames[i].replace(/[{}]/gi, "").split('.'),
+                        value = object;
+                    
+                    for (var j = 0; j < nestedProperties.length; j++) {
+                        if (value != undefined) value = value[nestedProperties[j]];
+                    }
+                    result = result.replace(propertyNames[i], value || "");
+                }
+            }
+            return result;
+        };
+        
+        var pusher = new Pusher('@Config.Pusher.AppKey'),
+            channel = pusher.subscribe('@Config.Pusher.ChannelName'),
+            newTweeMarkUpTemplate = '<li>'+
+                                        '<div class="avatar">'+
+                                            '<img src="{user.profile_image_url}"/>'+
+                                            '<div class="comment-count" style="display: none;">{retweet_count}</div>'+
+                                        '</div>'+
+                                        '<header>'+
+                                            '<p class="title">'+
+                                                '<a href="{user.url}">'+
+                                                    '<span class="headline">{user.description}</span>' +
+                                                '</a>'+
+                                            '</p>' +
+                                            '<p class="excerpt">' +
+                                                '<pre>' +
+                                                    '{text}' +
+                                                '</pre>' +
+                                            '</p>' +
+                                        '</header>'+
+                                    '</li>';
+
+        channel.bind('@Config.Pusher.NewTweetEventName', function(data) {
+
+            var newTweetMarkUp = newTweeMarkUpTemplate.fillWith(data);
+            $("#tweets").append(newTweetMarkUp);
+        });
+
+        channel.bind('@Config.Pusher.StreamErrorTweetEventName', function(data) {
+            alert('An event was triggered with message: ' + data.message);
+        });
+
+       
+    });
+</script>

@@ -15,7 +15,7 @@ namespace TwitterRealtimeSearch.Web
 
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
-            TwitterOAuth.Configure();
+            TwitterConfig.RegisterOAuth();
         }
     }
 }

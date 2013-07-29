@@ -8,7 +8,7 @@ namespace TwitterRealtimeSearch.Web
         {
             public static string ConsumerKey
             {
-                get { return GetSettings("ConsumerKey   "); }
+                get { return GetSettings("ConsumerKey"); }
             }
 
             public static string ConsumerSecret
@@ -49,9 +49,14 @@ namespace TwitterRealtimeSearch.Web
                 get { return GetSettings("Pusher_ChannelName"); }
             }
 
-            public static string EventName
+            public static string NewTweetEventName
             {
-                get { return GetSettings("Pusher_EventName"); }
+                get { return GetSettings("Pusher_NewTweetEventName"); }
+            }
+
+            public static string StreamErrorTweetEventName
+            {
+                get { return GetSettings("Pusher_StreamErrorTweetEventName"); }
             }
         }
         
