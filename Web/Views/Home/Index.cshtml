@@ -1,13 +1,11 @@
 ﻿@using TwitterRealtimeSearch.Web
 @model TwitterRealtimeSearch.Web.Controllers.RealTimeTweetSearch
-@{
-    var search = string.IsNullOrWhiteSpace(Model.Search) ? "(Empty)" : "\"" + Model.Search + "\"";
-}
+
 <script src="http://js.pusher.com/2.1/pusher.js"></script>
 <script src="~/Scripts/jquery-2.0.3.js"></script>
 <link href="~/Content/Site.css" rel="stylesheet" />
 
-<h2>Results for @search</h2>
+<h2>Results for @Html.TextBoxFor(x => x.Search)</h2>
 <ul id="tweets">
    
 </ul>
@@ -15,7 +13,8 @@
 <script type="text/javascript">
     $(function() {
 
-        String.prototype.fillWith = function(object) {
+        /* utility method to hydrate markup of tweets */
+        String.prototype.fillWith = function (object) {
 
             var propertyNames = this.match(/{[\w|.]*}/gi),
                 result = this;
@@ -35,6 +34,8 @@
             }
             return result;
         };
+        
+        /* subcribed channel and events */
         
         var pusher = new Pusher('@Config.Pusher.AppKey'),
             channel = pusher.subscribe('@Config.Pusher.ChannelName'),
@@ -66,7 +67,18 @@
         channel.bind('@Config.Pusher.StreamErrorTweetEventName', function(data) {
             alert('An event was triggered with message: ' + data.message);
         });
+        
+        /* ajax post to index to search for new streams*/
 
-       
+        $("#Search")
+            .keyup(function(e) {
+                var $searchInput = $(this);
+
+                if (e.which == 13) {
+                    $.post('@Url.Action("Index")', { Search: $searchInput.val() }, "POST");
+                }
+            });
+
+
     });
 </script>

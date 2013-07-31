@@ -1,5 +1,4 @@
-﻿using System.Net;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using PusherServer;
 using TweetSource.EventSource;
 using TwitterRealtimeSearch.Web.App_Start;
@@ -40,10 +39,20 @@ namespace TwitterRealtimeSearch.Web.Controllers
 
         //
         // GET: /HomeController/Index/searchTerm1,searchTerm2
+        [HttpGet]
         public ActionResult Index(string search)
         {
             StartStreamingTweetsFor(search);
             return View(new RealTimeTweetSearch{ Search = search});
+        }
+
+        //
+        // Post: /HomeController/Index/searchTerm1,searchTerm2
+        [HttpPost]
+        public JsonResult Index(RealTimeTweetSearch searchViewModel)
+        {
+            StartStreamingTweetsFor(searchViewModel.Search);
+            return Json(string.Empty);
         }
         
         private void InitialiseAndConfigureTweetEventSource(TweetEventSource tweetEventSource)
@@ -71,12 +80,12 @@ namespace TwitterRealtimeSearch.Web.Controllers
 
         private void OnSourceDown(object sender, TweetEventArgs tweetEventArg)
         {
-            _pusher.Trigger(Config.Pusher.ChannelName, Config.Pusher.StreamErrorTweetEventName, tweetEventArg.InfoText);
+            var result = _pusher.Trigger(Config.Pusher.ChannelName, Config.Pusher.StreamErrorTweetEventName,new {message = tweetEventArg.InfoText});
         }
 
         private void OnTweetReceived(object sender, TweetEventArgs tweetEventArg)
         {
-            _pusher.Trigger(Config.Pusher.ChannelName, Config.Pusher.StreamErrorTweetEventName, tweetEventArg.InfoText);
+            _pusher.Trigger(Config.Pusher.ChannelName, Config.Pusher.StreamErrorTweetEventName, tweetEventArg.JsonText);
         }
 
         ~HomeController()
